@@ -1,0 +1,1278 @@
+baglanti.php
+
+<?php
+try {
+    $baglanti = new PDO("mysql:host=localhost; dbname=yazlab3", "root", "");
+    #echo "bağlandın";
+
+} catch (\Throwable $th) {
+    echo $e->getMessage();
+}
+
+?>
+
+*********************************************************
+hoca-ekle.php
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hoca ekleme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a href="anasayfa.php"><img width="200px" src="tasarım/resimler/book.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+        </nav>
+
+    </div>
+    <br><br>
+    <h1 style="text-align: center;" style="font-size: 24px; ">Akademisyen Ekleyiniz</h1>
+    <br>
+    <div class="container">
+        <div>
+            <form action="hoca-islem.php" method="post">
+                <div class="form-group">
+
+
+                    <label>Hoca Adı</label>
+                    <input type="text" class="form-control" name="hoca_adi">
+                    <br>
+                    <label>Ders Adı</label>
+                    <input type="text" class="form-control" name="ders_adi">
+                   
+
+                </div>
+                <br>
+                <button name="hoca-ekle" type="submit" class="btn btn-primary">Hoca Ekle</button>
+            </form>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous">
+            </script>
+        </div>
+    </div>
+    
+
+</body>
+
+</html>
+
+********************************************************
+
+hoca-islem.php
+
+<?php
+include "baglanti.php";
+if (isset($_POST["hoca-ekle"])) {
+
+    $kaydet = $baglanti->prepare("insert into hoca set
+    
+    hoca_adi=:hoca_adi,
+    ders_adi=:ders_adi
+    
+    
+    ");
+    $insert = $kaydet->execute(
+        array(
+
+            "hoca_adi" => $_POST["hoca_adi"],
+            "ders_adi" => $_POST["ders_adi"]
+            
+
+
+        )
+    );
+    if ($insert) {
+        header("location:hoca.php?durum=yes");
+    } else {
+        header("location:hoca.php?durum=no");
+    }
+} else {
+    echo "gelmediii";
+}
+
+
+if (isset($_GET['hocasil'])) {
+
+
+    $sil = $baglanti->prepare("DELETE FROM hoca WHERE hoca_id=:hoca_id");
+
+    $sil->execute(
+        array(
+
+            'hoca_id' => $_GET['hoca_id']
+
+        )
+    );
+
+
+    if ($sil) {
+        Header("location:hoca.php?durum=yes");
+    } else {
+        Header("location:hoca.php?durum=no");
+    }
+
+
+}
+?>
+
+******************************************************************
+hoca.php
+
+<?php
+include "baglanti.php";
+
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kitaplar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body style="background-color: #dddddd;">
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                        <a ><img width="150px" src="kouLogo.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+        </nav>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3" style="text-align:center;">
+                <?php if (@$_GET["durum"] == "yes") { ?>
+                <div class="alert bg-success" id="successAlert">
+                    <b style="color:aliceblue">Başarılı</b>
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } else if (@$_GET["durum"] == "no") { ?>
+                <div class="alert bg-danger" id="successAlert">
+                    <b style="color:aliceblue">Başarısız</b>
+
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } ?>
+            </div>
+        </div>
+        <br>
+        <a href="hoca-ekle.php"><button style="float:right" class="btn btn-dark" type="submit">Hoca
+                Ekle</button></a>
+        <br><br>
+        <table class="table  table-hover " style="background-color: #cccccc;">
+            <thead>
+                <tr class="text-dark">
+                    <th>Hoca ID</th>
+                    <th>Hoca Adı</th>
+                    <th>Ders Adı </th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $urunsorgula = $baglanti->prepare("SELECT * FROM hoca");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+
+                <tr>
+                    <td>
+                        <?php echo $uruncek["hoca_id"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["ders_adi"] ?>
+                    </td>
+                
+                    
+                    <td> <a href="hoca-islem.php?hocasil&hoca_id=<?php echo $uruncek["hoca_id"] ?>"><button
+                                type=" submit" class="btn btn-danger">Sil</button></a> </td>
+                </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
+*********************************************************************************
+program-ekle.php
+
+<?php
+include "baglanti.php";
+
+?>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Program ekleme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a href="anasayfa.php"><img width="200px" src="tasarım/resimler/book.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+        </nav>
+
+    </div>
+    <br><br>
+    <h1 style="text-align: center;" style="font-size: 24px; ">Ders Programı Ekleyiniz</h1>
+    <br>
+    <div class="container">
+        <div>
+            <form action="program-islem.php" method="post">
+                <div class="form-group">
+                    
+                <label>Hoca Adı</label>
+                <select class="form-select" name="hoca_id" aria-label="Default select example">
+                        <?php
+                        $urunsorgula = $baglanti->prepare("SELECT * FROM hoca");
+                        $urunsorgula->execute();
+                        while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                            <option value="<?php echo $uruncek["hoca_id"] ?>">
+                                <?php echo  $uruncek["hoca_adi"] ?>
+                            </option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                    <br>
+                    <label>Sınıf Adı</label>
+                    <select class="form-select" name="sinif_id" aria-label="Default select example">
+                        <?php
+                        $urunsorgula = $baglanti->prepare("SELECT * FROM sinif");
+                        $urunsorgula->execute();
+                        while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                            <option value="<?php echo $uruncek["sinif_id"] ?>">
+                                <?php echo  $uruncek["sinif_adi"] ?>
+                            </option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                    <br>
+                    <label>Gün</label>
+                        <select class="form-select" name="gun" aria-label="Default select example">
+                        
+                        <option value="Pazartesi">Pazartesi</option>
+                        <option value="Salı">Salı</option>
+                        <option value="Çarşamba">Çarşamba</option>
+                        <option value="Perşembe">Perşembe</option>
+                        <option value="Cuma">Cuma</option>
+                        </select>
+
+                    <br>
+                    <label>Saat</label>
+                    
+                    <select class="form-select" name="saat" aria-label="Default select example">
+                        
+                        <option value="9.00">9.00</option>
+                        <option value="10.00">10.00</option>
+                        <option value="11.00">11.00</option>
+                        <option value="12.00">12.00</option>
+                        <option value="13.00">13.00</option>
+                        <option value="14.00">14.00</option>
+                        <option value="15.00">15.00</option>
+                        <option value="16.00">16.00</option>
+                        <option value="17.00">17.00</option>
+                        </select>
+
+                    <br>
+                   
+
+                </div>
+                <br>
+                <button name="program-ekle" type="submit" class="btn btn-primary">Program Ekle</button>
+            </form>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous">
+            </script>
+        </div>
+    </div>
+ 
+
+</body>
+
+</html>
+***********************************************************
+program-islem.php
+
+<?php
+include "baglanti.php";
+if (isset($_POST["program-ekle"])) {
+
+    $kaydet = $baglanti->prepare("insert into program set
+    
+    hoca_id=:hoca_id,
+    sinif_id=:sinif_id,
+    gun=:gun,
+    saat=:saat
+    
+    ");
+    $insert = $kaydet->execute(
+        array(
+                
+            "hoca_id" => $_POST["hoca_id"],
+            "sinif_id" => $_POST["sinif_id"],
+            "gun" => $_POST["gun"],
+            "saat" => $_POST["saat"]
+
+        )
+    );
+    if ($insert) {
+        header("location:program.php?durum=yes");
+    } else {
+        header("location:program.php?durum=no");
+    }
+} else {
+    echo "gelmediii";
+}
+
+
+
+if (isset($_GET['programsil'])) {
+
+
+    $sil = $baglanti->prepare("DELETE FROM program WHERE program_id=:program_id");
+
+    $sil->execute(
+        array(
+
+            'program_id' => $_GET['program_id']
+
+        )
+    );
+
+
+    if ($sil) {
+        Header("location:program.php?durum=yes");
+    } else {
+        Header("location:program.php?durum=no");
+    }
+
+
+}
+?>
+******************************************************
+program.php
+
+<?php
+include "baglanti.php";
+
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kitaplar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body >
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                        <a ><img width="150px" src="kouLogo.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+           
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            
+        </nav>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3" style="text-align:center;">
+                <?php if (@$_GET["durum"] == "yes") { ?>
+                <div class="alert bg-success" id="successAlert">
+                    <b style="color:aliceblue">Başarılı</b>
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } else if (@$_GET["durum"] == "no") { ?>
+                <div class="alert bg-danger" id="successAlert">
+                    <b style="color:aliceblue">Başarısız</b>
+
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } ?>
+            </div>
+        </div>
+        <br>
+        <a href="program-ekle.php"><button style="float:right" class="btn btn-dark" type="submit">Program
+                Ekle</button></a>
+        <br><br>
+        <table class="table  table-hover " style="background-color: #cccccc;">
+            <thead>
+                <tr class="text-dark">
+                    <th>Program ID</th>
+                    <th>Hoca ADI</th>
+                    <th>Sınıf Adı </th>
+                    <th>Gün </th>
+                    <th>Saat</th>
+                    <th></th>
+                    
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi 
+                FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id
+                JOIN sinif ON program.sinif_id = sinif.sinif_id");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+
+                <tr>
+                <td>
+                        <?php echo $uruncek["program_id"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["sinif_adi"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["gun"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["saat"] ?>
+                    </td>
+                
+                    <td></td>
+                    <td> <a href="program-islem.php?programsil&program_id=<?php echo $uruncek["program_id"] ?>"><button
+                                type=" submit" class="btn btn-danger">Sil</button></a> </td>
+                </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+
+
+
+        
+
+        <table>
+        <tr>
+            <th colspan="12" style="background-color:cadetblue">DERS PROGRAMI 1036 </th>
+        </tr>
+        
+        
+        <tr>
+            <th>Pazartesi</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'pazartesi' AND sinif.sinif_adi = '1036';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Salı</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Salı' AND sinif.sinif_adi = '1036';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Çarşamba</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Çarşamba' AND sinif.sinif_adi = '1036';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Perşembe</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Perşembe' AND sinif.sinif_adi = '1036';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Cuma</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Cuma' AND sinif.sinif_adi = '1036';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        
+    </table>
+    <br><br>
+    <table>
+        <tr>
+            <th colspan="12" style="background-color:cadetblue">DERS PROGRAMI 1044 </th>
+        </tr>
+        
+        
+        <tr>
+            <th>Pazartesi</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'pazartesi' AND sinif.sinif_adi = '1044';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Salı</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Salı' AND sinif.sinif_adi = '1044';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Çarşamba</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Çarşamba' AND sinif.sinif_adi = '1044';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Perşembe</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Perşembe' AND sinif.sinif_adi = '1044';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Cuma</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Cuma' AND sinif.sinif_adi = '1044';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        
+    </table>
+    <br><br>
+    <table>
+        <tr>
+            <th colspan="12" style="background-color:cadetblue">DERS PROGRAMI 1040 </th>
+        </tr>
+        
+        
+        <tr>
+            <th>Pazartesi</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'pazartesi' AND sinif.sinif_adi = '1040';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Salı</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Salı' AND sinif.sinif_adi = '1040';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Çarşamba</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Çarşamba' AND sinif.sinif_adi = '1040';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Perşembe</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Perşembe' AND sinif.sinif_adi = '1040';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        <tr>
+            <th>Cuma</th>
+            <?php
+                $urunsorgula = $baglanti->prepare("SELECT program.*, hoca.hoca_adi, sinif.sinif_adi, hoca.ders_adi FROM program 
+                JOIN hoca ON program.hoca_id = hoca.hoca_id             
+                JOIN sinif ON program.sinif_id = sinif.sinif_id
+                WHERE program.gun = 'Cuma' AND sinif.sinif_adi = '1040';");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+            <td>
+                        <?php echo $uruncek["hoca_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["ders_adi"] ?>
+                        <br>
+                        <?php echo $uruncek["saat"] ?>
+            </td>
+            <?php
+                }
+                ?>
+                
+        </tr>
+        
+    </table>
+    <br><br><br>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <div>
+       
+        
+</body>
+************************************************************
+sinif-ekle.php
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sınıf ekleme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+
+<body>
+<div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a href="anasayfa.php"><img width="200px" src="tasarım/resimler/book.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+        </nav>
+
+    </div>
+    <br><br>
+    <h1 style="text-align: center;" style="font-size: 24px; ">Sınıf Ekleyiniz</h1>
+    <br>
+    <div class="container">
+        <div>
+            <form action="sinif-islem.php" method="post">
+                <div class="form-group">
+
+
+                    <label>Sınıf Adı</label>
+                    <input type="text" class="form-control" name="sinif_adi">
+                    <br>
+                    
+
+                </div>
+                <br>
+                <button name="sinif-ekle" type="submit" class="btn btn-primary">Sınıf Ekle</button>
+            </form>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous">
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>
+******************************************************
+sinif-islem.php
+
+<?php
+include "baglanti.php";
+if (isset($_POST["sinif-ekle"])) {
+
+    $kaydet = $baglanti->prepare("insert into sinif set
+    
+    sinif_adi=:sinif_adi
+  
+    
+   
+    
+    ");
+    $insert = $kaydet->execute(
+        array(
+
+            "sinif_adi" => $_POST["sinif_adi"]
+           
+
+
+        )
+    );
+    if ($insert) {
+        header("location:sinif.php?durum=yes");
+    } else {
+        header("location:sinif.php?durum=no");
+    }
+} else {
+    echo "gelmediii";
+}
+
+
+
+if (isset($_GET['sinifsil'])) {
+
+
+    $sil = $baglanti->prepare("DELETE FROM sinif WHERE sinif_id=:sinif_id");
+
+    $sil->execute(
+        array(
+
+            'sinif_id' => $_GET['sinif_id']
+
+        )
+    );
+
+
+    if ($sil) {
+        Header("location:sinif.php?durum=yes");
+    } else {
+        Header("location:sinif.php?durum=no");
+    }
+
+
+}
+?>
+***************************************
+sinif.php
+
+<?php
+include "baglanti.php";
+
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sınıflar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body style="background-color: #dddddd;">
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color: #001920;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <a ><img width="150px" src="kouLogo.png"
+                                    alt="foto ismi" /></a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-dark" style="background-color: #191970 ; ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href=" hoca.php">AKADEMİSYENLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="sinif.php">DERSLİKLER</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" href="program.php">DERS PROGRAMI</a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+            <a class="text-white nav-link ml-2" style="text-decoration:none;" ></a>
+        </nav>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3" style="text-align:center;">
+                <?php if (@$_GET["durum"] == "yes") { ?>
+                <div class="alert bg-success" id="successAlert">
+                    <b style="color:aliceblue">Başarılı</b>
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } else if (@$_GET["durum"] == "no") { ?>
+                <div class="alert bg-danger" id="successAlert">
+                    <b style="color:aliceblue">Başarısız</b>
+
+                </div>
+                <script>
+                setTimeout(function() {
+                    document.getElementById("successAlert").style.display = "none";
+                }, 2000); // 3 saniye sonra mesaj kutusunu gizle
+                </script>
+                <?php } ?>
+            </div>
+        </div>
+        <br>
+        <a href="sinif-ekle.php"><button style="float:right" class="btn btn-dark" type="submit">Sınıf
+                Ekle</button></a>
+        <br><br>
+        <table class="table  table-hover " style="background-color: #cccccc;">
+            <thead>
+                <tr class="text-dark">
+                    <th>Sınıf ID</th>
+                    <th>Sınıf Adı</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $urunsorgula = $baglanti->prepare("SELECT * FROM sinif");
+                $urunsorgula->execute();
+                while ($uruncek = $urunsorgula->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+
+                <tr>
+                    <td>
+                        <?php echo $uruncek["sinif_id"] ?>
+                    </td>
+                    <td>
+                        <?php echo $uruncek["sinif_adi"] ?>
+                    </td>
+                    
+                   
+                    
+                    <td> <a href="sinif-islem.php?sinifsil&sinif_id=<?php echo $uruncek["sinif_id"] ?>"><button
+                                type=" submit" class="btn btn-danger">Sil</button></a> </td>
+                </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
