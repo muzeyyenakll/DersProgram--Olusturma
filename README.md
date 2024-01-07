@@ -17,7 +17,7 @@ Bu talimatlar, projeyi yerel ortamınızda çalıştırmak için size yardımcı
 1. Projeyi bilgisayarınıza klonlayın:
 
     ```bash
-    git clone https://github.com/kullanici_adi/proje-adiniz.git
+    git clone https://github.com/muzeyyenakll/DersProgram--Olusturma.git
     ```
 
 2. Veritabanı bağlantı bilgilerinizi ekleyin.
